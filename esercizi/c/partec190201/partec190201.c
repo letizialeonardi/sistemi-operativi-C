@@ -31,7 +31,8 @@ int main(int argc, char **argv){
 		exit(2);
 	}
 	
-	if(pipe(piped[0]) < 0){
+	//SBAGLIATO if(pipe(piped[0]) < 0){
+	if(pipe(piped[1]) < 0){
 		printf("Errore in pipe\n");
 		exit(1);
 	}
@@ -44,7 +45,7 @@ int main(int argc, char **argv){
 			exit(4);
 		}
 		//figlio
-		printf("DEBUG %d\n", i);
+		//MEGLIO DI NO printf("DEBUG %d\n", i);
 		if(pid == 0){
 			//chiudo pipe
 			close(piped[0][0]);
@@ -88,8 +89,9 @@ int main(int argc, char **argv){
 		nread0 = read(piped[0][0], &msgP, 1);
 		nread1 = read(piped[1][0], &msgD, 1); 
 	}
+	//MANCA Una volta ricevuti tutti i caratteri, il padre deve stampare su standard output il numero totale di caratteri scritti. 
 	
-	//aspetto i figlii
+	//aspetto i figli
 	for(int i = 0; i < nFile; i++){
 		if((pidfiglio = wait(&status)) < 0){
 			printf("Errore nella wait\n");
@@ -103,6 +105,7 @@ int main(int argc, char **argv){
 		else{
 			ritorno =(int)status >> 8;
 			ritorno &= 0xFF;
+			//MANCA Al termine, il padre deve stampare su standard output il PID di ogni figlio e il valore ritornato.
 		}
 	}
 	exit(0);
